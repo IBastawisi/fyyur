@@ -61,7 +61,7 @@ class Venue(db.Model):
     website = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean())
     seeking_description = db.Column(db.String(500))
-    shows = db.relationship("Show", back_populates="venue")
+    shows = db.relationship("Show", cascade="all,delete", back_populates="venue")
 
     def __repr__(self):
         return f'{self.id}: {self.name}'
@@ -79,7 +79,7 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean())
     seeking_description = db.Column(db.String(500))
-    shows = db.relationship("Show", back_populates="artist")
+    shows = db.relationship("Show", cascade="all,delete", back_populates="artist")
 
     def __repr__(self):
         return f'{self.id}: {self.name}'
@@ -324,11 +324,42 @@ def create_venue_submission():
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
-    # TODO: Complete this endpoint for taking a venue_id, and using
-    # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
 
-    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-    # clicking that button delete it from the db then redirect the user to the homepage
+    venue = Venue.query.get(venue_id)
+    try:
+        db.session.delete(venue)
+        db.session.commit()
+        flash('Venue ' + venue.name + ' was successfully deleted!')
+
+    except:
+        db.session.rollback()
+        flash('An error occurred. Venue ' + venue.name + ' could not be deleted.')
+        abort(400)
+
+    finally:
+        db.session.close()
+
+
+    return None
+
+@app.route('/artists/<artist_id>', methods=['DELETE'])
+def delete_artist(artist_id):
+
+    artist = Artist.query.get(artist_id)
+    try:
+        db.session.delete(artist)
+        db.session.commit()
+        flash('Artist ' + artist.name + ' was successfully deleted!')
+
+    except:
+        db.session.rollback()
+        flash('An error occurred. Artist ' + artist.name + ' could not be deleted.')
+        abort(400)
+
+    finally:
+        db.session.close()
+
+
     return None
 
 #  Artists

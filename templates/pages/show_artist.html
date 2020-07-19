@@ -41,7 +41,7 @@
 
 		<div style="padding: 1rem; margin-top: 1rem;">
 			<a class="btn btn-primary" href="/artists/{{ artist.id }}/edit">Edit</a>
-			<a class="btn btn-danger" href="/artists/{{ artist.id }}/delete">Delete</a>
+			<button class="btn btn-danger" onclick="fetch('/artists/{{ artist.id }}', {method: 'delete'}).then(()=>location.href='/')">Delete</a>
 		</div>
 	</div>
 

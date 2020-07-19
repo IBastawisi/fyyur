@@ -44,7 +44,7 @@
 
 		<div style="padding: 1rem; margin-top: 1rem;">
 			<a class="btn btn-primary" href="/venues/{{ venue.id }}/edit">Edit</a>
-			<a class="btn btn-danger" href="/venues/{{ venue.id }}/delete">Delete</a>
+			<button class="btn btn-danger" onclick="fetch('/venues/{{ venue.id }}', {method: 'delete'}).then(()=>location.href='/')">Delete</a>
 		</div>
 	</div>
 	<div class="col-sm-6">
