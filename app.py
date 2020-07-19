@@ -117,7 +117,7 @@ artist2 = Artist(
 
 artist3 = Artist(
     name="The Wild Sax Band",
-    genres="Jazz, Classical",
+    genres="Jazz,Classical",
     city="San Francisco",
     state="CA",
     phone="432-325-5432",
@@ -127,7 +127,7 @@ artist3 = Artist(
 
 venue1 = Venue(
     name="The Musical Hop",
-    genres="Jazz, Reggae, Swing, Classical, Folk",
+    genres="Jazz,Reggae,Swing,Classical,Folk",
     address="1015 Folsom Street",
     city="San Francisco",
     state="CA",
@@ -141,7 +141,7 @@ venue1 = Venue(
 
 venue2 = Venue(
     name="The Dueling Pianos Bar",
-    genres="Classical, R&B, Hip-Hop",
+    genres="Classical,R&B,Hip-Hop",
     address="335 Delancey Street",
     city="New York",
     state="NY",
@@ -154,7 +154,7 @@ venue2 = Venue(
 
 venue3 = Venue(
     name="Park Square Live Music & Coffee",
-    genres="Rock n Roll, Jazz, Classical, Folk",
+    genres="Rock n Roll,Jazz,Classical,Folk",
     address="34 Whiskey Moore Ave",
     city="San Francisco",
     state="CA",
@@ -271,7 +271,7 @@ def show_venue(venue_id):
     data = {
         "id": venue.id,
         "name": venue.name,
-        "genres": venue.genres.split(", "),
+        "genres": venue.genres.split(","),
         "address": venue.address,
         "city": venue.city,
         "state": venue.state,
@@ -304,7 +304,9 @@ def create_venue_form():
 def create_venue_submission():
 
     try:
-        venue = Venue(**request.form)
+        form = {**request.form}
+        form['genres'] = ','.join(request.form.getlist("genres"))
+        venue = Venue(**form)
         db.session.add(venue)
         db.session.commit()
         flash('Venue ' + request.form['name'] + ' was successfully listed!')
@@ -364,7 +366,7 @@ def show_artist(artist_id):
     data = {
         "id": artist.id,
         "name": artist.name,
-        "genres": artist.genres.split(", "),
+        "genres": artist.genres.split(","),
         "city": artist.city,
         "state": artist.state,
         "phone": artist.phone,
@@ -388,31 +390,68 @@ def show_artist(artist_id):
 
 @ app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
-    form = ArtistForm()
     artist = Artist.query.get(artist_id)
+    form = ArtistForm(obj=artist)
     return render_template('forms/edit_artist.html', form=form, artist=artist)
 
 
 @ app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
+
+    try:
+        form = {**request.form}
+        form['genres'] = ','.join(request.form.getlist("genres"))
+        artist = Artist.query.get(artist_id)
+        for key, value in form.items():
+            setattr(artist, key, value)
+
+        db.session.commit()
+        flash('Artist ' + request.form['name'] + ' was successfully updated!')
+
+    except:
+        db.session.rollback()
+        flash('An error occurred. Artist ' +
+              request.form['name'] + ' could not be updated.')
+        abort(400)
+
+    finally:
+        db.session.close()
+
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 
 
 @ app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
-    form = VenueForm()
     venue = Venue.query.get(venue_id)
+    form = VenueForm(obj=venue)
     # TODO: populate form with values from venue with ID <venue_id>
     return render_template('forms/edit_venue.html', form=form, venue=venue)
 
 
 @ app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-    # TODO: take values from the form submitted, and update existing
-    # venue record with ID <venue_id> using the new attributes
+
+    try:
+        form = {**request.form}
+        form['genres'] = ','.join(request.form.getlist("genres"))
+        venue = Venue.query.get(venue_id)
+        for key, value in form.items():
+            setattr(venue, key, value)
+
+        db.session.commit()
+        flash('Venue ' + request.form['name'] + ' was successfully updated!')
+
+    except:
+        db.session.rollback()
+        flash('An error occurred. Venue ' +
+              request.form['name'] + ' could not be updated.')
+        abort(400)
+
+    finally:
+        db.session.close()
+
+
     return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
@@ -428,8 +467,9 @@ def create_artist_form():
 @ app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
     try:
-        genres = request.form["genres"]
-        artist = Artist(**request.form)
+        form = {**request.form}
+        form['genres'] = ','.join(request.form.getlist("genres"))
+        artist = Artist(**form)
         db.session.add(artist)
         db.session.commit()
         flash('Artist ' + request.form['name'] + ' was successfully listed!')

@@ -41,6 +41,11 @@
 			<i class="fas fa-moon"></i> Not currently seeking talent
 		</p>
 		{% endif %}
+
+		<div style="padding: 1rem; margin-top: 1rem;">
+			<a class="btn btn-primary" href="/venues/{{ venue.id }}/edit">Edit</a>
+			<a class="btn btn-danger" href="/venues/{{ venue.id }}/delete">Delete</a>
+		</div>
 	</div>
 	<div class="col-sm-6">
 		<img src="{{ venue.image_link }}" alt="Venue Image" />
