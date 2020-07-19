@@ -234,47 +234,22 @@ def index():
 
 @app.route('/venues')
 def venues():
-    # TODO: replace with real venues data.
-    #       num_shows should be aggregated based on number of upcoming shows per venue.
-    data = [{
-        "city": "San Francisco",
-        "state": "CA",
-        "venues": [{
-            "id": 1,
-            "name": "The Musical Hop",
-            "num_upcoming_shows": 0,
-        }, {
-            "id": 3,
-            "name": "Park Square Live Music & Coffee",
-            "num_upcoming_shows": 1,
-        }]
-    }, {
-        "city": "New York",
-        "state": "NY",
-        "venues": [{
-            "id": 2,
-            "name": "The Dueling Pianos Bar",
-            "num_upcoming_shows": 0,
-        }]
-    }]
+    areas = Venue.query.with_entities(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
+    upcoming_shows = Show.query.with_entities(Show.venue_id, db.func.count("*").label("num_upcoming_shows")).filter(Show.start_time > datetime.today()).group_by(Show.venue_id).subquery()
 
-    areas = Venue.query.with_entities(Venue.city).group_by(Venue.city).all()
+    data = []
+    for area in areas:
+        data.append({
+            "city": area.city,
+            "state": area.state,
+            "venues": Venue.query.filter(Venue.city==area.city).with_entities(Venue.id, Venue.name, upcoming_shows.c.num_upcoming_shows).outerjoin(upcoming_shows, upcoming_shows.c.venue_id == Venue.id).all()
+        }) 
 
-    return render_template('pages/venues.html', areas=areas)
+    return render_template('pages/venues.html', areas=data)
 
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
-    # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-    # seach for Hop should return "The Musical Hop".
-    # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-    # response = {
-    #     "count": 1,
-    #     "data": [{
-    #         "id": 2,
-    #         "name": "The Dueling Pianos Bar",
-    #     }]
-    # }
 
     venues = Venue.query.with_entities(Venue.id, Venue.name).filter(Venue.name.ilike(
         f"%{request.form.get('search_term', '')}%")).all()
@@ -368,17 +343,12 @@ def artists():
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
-    # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-    # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
-    # search for "band" should return "The Wild Sax Band".
-    response = {
-        "count": 1,
-        "data": [{
-            "id": 4,
-            "name": "Guns N Petals",
-            "num_upcoming_shows": 0,
-        }]
-    }
+
+    artists = Artist.query.with_entities(Artist.id, Artist.name).filter(Artist.name.ilike(
+        f"%{request.form.get('search_term', '')}%")).all()
+
+    response = {'count': len(artists), 'data': artists}
+
     return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
 
 
@@ -481,19 +451,9 @@ def create_artist_submission():
 
 @ app.route('/shows')
 def shows():
-    shows = Show.query.all()
-    data = []
-    for show in shows:
-        data.append({
-            "venue_id": show.venue_id,
-            "venue_name": show.venue.name,
-            "artist_id": show.artist_id,
-            "artist_name": show.artist.name,
-            "artist_image_link": show.artist.image_link,
-            "start_time": show.start_time.strftime("%c")
-        })
-
-    return render_template('pages/shows.html', shows=data)
+    shows = Show.query.join(Venue).join(Artist).with_entities(Show.venue_id, Show.artist_id, Show.start_time,
+        Venue.name.label("venue_name"), Artist.name.label("artist_name"), Artist.image_link.label("artist_image_link")).all()
+    return render_template('pages/shows.html', shows=shows)
 
 
 @ app.route('/shows/create')
