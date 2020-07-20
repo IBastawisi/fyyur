@@ -61,7 +61,8 @@ class Venue(db.Model):
     website = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean())
     seeking_description = db.Column(db.String(500))
-    shows = db.relationship("Show", cascade="all,delete", back_populates="venue")
+    shows = db.relationship(
+        "Show", cascade="all,delete", back_populates="venue")
 
     def __repr__(self):
         return f'{self.id}: {self.name}'
@@ -79,7 +80,8 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean())
     seeking_description = db.Column(db.String(500))
-    shows = db.relationship("Show", cascade="all,delete", back_populates="artist")
+    shows = db.relationship("Show", cascade="all,delete",
+                            back_populates="artist")
 
     def __repr__(self):
         return f'{self.id}: {self.name}'
@@ -234,16 +236,18 @@ def index():
 
 @app.route('/venues')
 def venues():
-    areas = Venue.query.with_entities(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
-    upcoming_shows = Show.query.with_entities(Show.venue_id, db.func.count("*").label("num_upcoming_shows")).filter(Show.start_time > datetime.today()).group_by(Show.venue_id).subquery()
+    areas = Venue.query.with_entities(
+        Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
+    upcoming_shows = Show.query.with_entities(Show.venue_id, db.func.count(
+        "*").label("num_upcoming_shows")).filter(Show.start_time > datetime.today()).group_by(Show.venue_id).subquery()
 
     data = []
     for area in areas:
         data.append({
             "city": area.city,
             "state": area.state,
-            "venues": Venue.query.filter(Venue.city==area.city).with_entities(Venue.id, Venue.name, upcoming_shows.c.num_upcoming_shows).outerjoin(upcoming_shows, upcoming_shows.c.venue_id == Venue.id).all()
-        }) 
+            "venues": Venue.query.filter(Venue.city == area.city).with_entities(Venue.id, Venue.name, upcoming_shows.c.num_upcoming_shows).outerjoin(upcoming_shows, upcoming_shows.c.venue_id == Venue.id).all()
+        })
 
     return render_template('pages/venues.html', areas=data)
 
@@ -333,14 +337,15 @@ def delete_venue(venue_id):
 
     except:
         db.session.rollback()
-        flash('An error occurred. Venue ' + venue.name + ' could not be deleted.')
+        flash('An error occurred. Venue ' +
+              venue.name + ' could not be deleted.')
         abort(400)
 
     finally:
         db.session.close()
 
-
     return None
+
 
 @app.route('/artists/<artist_id>', methods=['DELETE'])
 def delete_artist(artist_id):
@@ -353,12 +358,12 @@ def delete_artist(artist_id):
 
     except:
         db.session.rollback()
-        flash('An error occurred. Artist ' + artist.name + ' could not be deleted.')
+        flash('An error occurred. Artist ' +
+              artist.name + ' could not be deleted.')
         abort(400)
 
     finally:
         db.session.close()
-
 
     return None
 
@@ -423,6 +428,8 @@ def show_artist(artist_id):
 def edit_artist(artist_id):
     artist = Artist.query.get(artist_id)
     form = ArtistForm(obj=artist)
+    form.genres.data = artist.genres.split(",")
+    
     return render_template('forms/edit_artist.html', form=form, artist=artist)
 
 
@@ -448,15 +455,15 @@ def edit_artist_submission(artist_id):
     finally:
         db.session.close()
 
-
     return redirect(url_for('show_artist', artist_id=artist_id))
 
 
 @ app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
     venue = Venue.query.get(venue_id)
-    form = VenueForm(obj=venue)
-    # TODO: populate form with values from venue with ID <venue_id>
+    form = VenueForm(obj=venue, genres=venue.genres.split(","))
+    form.genres.data = venue.genres.split(",")
+
     return render_template('forms/edit_venue.html', form=form, venue=venue)
 
 
@@ -481,7 +488,6 @@ def edit_venue_submission(venue_id):
 
     finally:
         db.session.close()
-
 
     return redirect(url_for('show_venue', venue_id=venue_id))
 
@@ -523,7 +529,7 @@ def create_artist_submission():
 @ app.route('/shows')
 def shows():
     shows = Show.query.join(Venue).join(Artist).with_entities(Show.venue_id, Show.artist_id, Show.start_time,
-        Venue.name.label("venue_name"), Artist.name.label("artist_name"), Artist.image_link.label("artist_image_link")).all()
+                                                              Venue.name.label("venue_name"), Artist.name.label("artist_name"), Artist.image_link.label("artist_image_link")).all()
     return render_template('pages/shows.html', shows=shows)
 
 
