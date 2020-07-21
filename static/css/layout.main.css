@@ -13,14 +13,15 @@ body {
   height: auto !important;
   height: 100%;
   /* Negative indent footer by its height */
-  margin: 0 auto -60px;
+  margin: 0 auto -61px;
   /* Pad bottom by footer height */
-  padding: 0 0 60px;
+  padding: 0 0 61px;
 }
 
 /* Set the fixed height of the footer here */
 #footer {
   height: 60px;
+  border-top: 1px solid #EEEEEE;
 }
 
 
@@ -28,7 +29,7 @@ body {
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
-#wrap > .container {
+#content {
   padding: 80px 15px 0;
 }
 .container .credit {
@@ -36,8 +37,7 @@ body {
 }
 
 #footer > .container {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 15px;
 }
 
 code {

@@ -3,17 +3,21 @@
 {% block content %}
 {% for area in areas %}
 <h3>{{ area.city }}, {{ area.state }}</h3>
-	<ul class="items">
-		{% for venue in area.venues %}
-		<li>
-			<a href="/venues/{{ venue.id }}">
-				<i class="fas fa-music"></i>
-				<div class="item">
-					<h5>{{ venue.name }}</h5>
-				</div>
-			</a>
-		</li>
-		{% endfor %}
-	</ul>
+<ul class="mdc-list" data-mdc-auto-init="MDCList">
+	{% for venue in area.venues %}
+	<li class="mdc-list-item" tabindex="0" data-mdc-auto-init="MDCRipple"
+		onclick="location.href='/venues/{{ venue.id }}'">
+		<span class="mdc-list-item__ripple"></span>
+		<span class="material-icons" aria-hidden="true">music_note</span>
+		<span class="mdc-list-item__text px-2">{{ venue.name }}</span>
+	</li>
+	{% endfor %}
+</ul>
 {% endfor %}
+<button class="mdc-fab" aria-label="Create" data-mdc-auto-init="MDCRipple" onclick="location.href='/venues/create'"
+	style="position: fixed;bottom: 5rem;right: 2rem;">
+	<div class="mdc-fab__ripple"></div>
+	<span class="mdc-fab__icon material-icons">add</span>
+</button>
+
 {% endblock %}

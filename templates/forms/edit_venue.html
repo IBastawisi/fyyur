@@ -1,42 +1,109 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Edit Venue{% endblock %}
 {% block content %}
-  <div class="form-wrapper">
+  <div class="form-wrapper mx-auto">
     <form class="form" method="post" action="/venues/{{venue.id}}/edit">
       <h3 class="form-heading">Edit venue <em>{{ venue.name }}</em> <a href="{{ url_for('index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
-      <div class="form-group">
-        <label for="name">Name</label>
-        {{ form.name(class_ = 'form-control', autofocus = true) }}
+      <div class="form-group my-2">
+        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+          <span class="mdc-text-field__ripple"></span>
+          {{ form.name(class_ = 'mdc-text-field__input', autofocus = true, **{"aria-labelledby":"name"}) }}
+          <span class="mdc-floating-label" id="name">Name</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
       </div>
-      <div class="form-group">
-          <label>City & State</label>
-          <div class="form-inline">
-            <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
-            </div>
-            <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
-            </div>
+      <div class="row mx-0 my-2">
+        <label class="mdc-text-field mdc-text-field--filled" style="flex: 1;" data-mdc-auto-init="MDCTextField">
+          <span class="mdc-text-field__ripple"></span>
+          {{ form.city(class_ = 'mdc-text-field__input', autofocus = true, **{"aria-labelledby":"city"}) }}
+          <span class="mdc-floating-label" id="city">City</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
+
+        <div class="mdc-select mdc-select--filled state" style="width: 112px;" data-mdc-auto-init="MDCSelect">
+          <div class="mdc-select__anchor">
+            <span class="mdc-select__ripple"></span>
+            <span class="mdc-select__selected-text">{{form.state.data}}</span>
+            <span class="mdc-select__dropdown-icon">
+              <svg
+                  class="mdc-select__dropdown-icon-graphic"
+                  viewBox="7 10 10 5">
+                <polygon
+                    class="mdc-select__dropdown-icon-inactive"
+                    stroke="none"
+                    fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                </polygon>
+                <polygon
+                    class="mdc-select__dropdown-icon-active"
+                    stroke="none"
+                    fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                </polygon>
+              </svg>
+            </span>
+            <span class="mdc-floating-label mdc-floating-label--float-above">State</span>
+            <span class="mdc-line-ripple"></span>
           </div>
-      </div>
-      <div class="form-group">
-        <label for="address">Address</label>
-        {{ form.address(class_ = 'form-control', autofocus = true) }}
-      </div>
-      <div class="form-group">
-          <label for="phone">Phone</label>
-          {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+        
+          <div class="mdc-select__menu state mdc-menu mdc-menu-surface">
+            <ul class="mdc-list">
+              {% for option in form.state.choices %}
+
+              <li class="mdc-list-item {% if form.state.data == option[0] %}mdc-list-item--selected{% endif %}" data-value="{{option[0]}}">
+                <span class="mdc-list-item__ripple"></span>
+                <span class="mdc-list-item__text">{{option[1]}}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-      <div class="form-group">
-        <label for="genres">Genres</label>
-        <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', id='genres', autofocus = true) }}
       </div>
-      <div class="form-group">
-          <label for="facebook_link">Facebook Link</label>
-          {{ form.facebook_link(class_ = 'form-control', placeholder='http://', id='facebook_link', autofocus = true) }}
+
+      <div class="form-group my-2">
+        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+          <span class="mdc-text-field__ripple"></span>
+          {{ form.address(class_ = 'mdc-text-field__input', autofocus = true, **{"aria-labelledby":"address"}) }}
+          <span class="mdc-floating-label" id="address">Address</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
+      </div>
+
+      <div class="form-group my-2">
+        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+          <span class="mdc-text-field__ripple"></span>
+          {{ form.phone(class_ = 'mdc-text-field__input', placeholder='xxx-xxx-xxxx', autofocus = true, **{"aria-labelledby":"phone"}) }}
+          <span class="mdc-floating-label" id="phone">Phone</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
+      </div>
+
+      <div class="form-group my-2">
+        <div class="mb-2"> <label class="px-2" for="genres">Genres</label>
+          <small>Ctrl+Click to select multiple</small>
         </div>
-      <input type="submit" value="Edit Venue" class="btn btn-primary btn-lg btn-block">
+        {{ form.genres(class_ = 'form-control form-select form-select-lg mb-3', placeholder='Genres, separated by commas', id='genres', autofocus = true) }}
+      </div>
+
+      <div class="form-group my-2">
+        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+          <span class="mdc-text-field__ripple"></span>
+          {{ form.facebook_link(class_ = 'mdc-text-field__input', autofocus = true, **{"aria-labelledby":"facebook_link"}) }}
+          <span class="mdc-floating-label" id="facebook_link">Facebook Link</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
+      </div>
+
+      <div class="form-group my-2">
+        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+          <span class="mdc-text-field__ripple"></span>
+          {{ form.image_link(class_ = 'mdc-text-field__input', autofocus = true, **{"aria-labelledby":"image_link"}) }}
+          <span class="mdc-floating-label" id="image_link">Image Link</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
+      </div>
+
+      <button type="submit" class="mdc-button mdc-button--outlined" data-mdc-auto-init="MDCRipple"> <span class="mdc-button__ripple"></span>Edit Venue</button>
     </form>
   </div>
 {% endblock %}

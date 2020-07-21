@@ -220,6 +220,7 @@ def format_datetime(value, format='medium'):
 
 
 app.jinja_env.filters['datetime'] = format_datetime
+app.jinja_env.add_extension('jinja2.ext.do')
 
 #----------------------------------------------------------------------------#
 # Controllers.
@@ -236,17 +237,17 @@ def index():
 
 @app.route('/venues')
 def venues():
-    areas = Venue.query.with_entities(
-        Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
+    areas = Venue.query.with_entities(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
     upcoming_shows = Show.query.with_entities(Show.venue_id, db.func.count(
         "*").label("num_upcoming_shows")).filter(Show.start_time > datetime.today()).group_by(Show.venue_id).subquery()
 
     data = []
     for area in areas:
+        venues=Venue.query.filter(Venue.city == area.city).with_entities(Venue.id, Venue.name, upcoming_shows.c.num_upcoming_shows).outerjoin(upcoming_shows, upcoming_shows.c.venue_id == Venue.id).all()
         data.append({
             "city": area.city,
             "state": area.state,
-            "venues": Venue.query.filter(Venue.city == area.city).with_entities(Venue.id, Venue.name, upcoming_shows.c.num_upcoming_shows).outerjoin(upcoming_shows, upcoming_shows.c.venue_id == Venue.id).all()
+            "venues": venues
         })
 
     return render_template('pages/venues.html', areas=data)
@@ -267,10 +268,15 @@ def search_venues():
 def show_venue(venue_id):
 
     venue = Venue.query.get(venue_id)
-    upcoming_shows = Show.query.join(Show.artist).with_entities(Artist.id.label("artist_id"), Artist.name.label("artist_name"), Artist.image_link.label("artist_image_link"), Show.start_time).filter(
-        Show.venue_id == venue_id, Show.start_time > datetime.today()).all()
-    past_shows = Show.query.join(Show.artist).with_entities(Artist.id.label("artist_id"), Artist.name.label("artist_name"), Artist.image_link.label("artist_image_link"), Show.start_time).filter(
-        Show.venue_id == venue_id, Show.start_time <= datetime.today()).all()
+    upcoming_shows = []
+    past_shows = []
+    
+    for show in venue.shows:
+        result = {"artist_id":show.artist_id,"artist_name":show.artist.name,"artist_image_link":show.artist.image_link,"start_time":show.start_time}
+        if show.start_time > datetime.today() :
+            upcoming_shows.append(result)
+        else:
+            past_shows.append(result)
 
     data = {
         "id": venue.id,
@@ -394,10 +400,15 @@ def search_artists():
 def show_artist(artist_id):
 
     artist = Artist.query.get(artist_id)
-    upcoming_shows = Show.query.join(Show.venue).with_entities(Venue.id.label("venue_id"), Venue.name.label("venue_name"), Venue.image_link.label("venue_image_link"), Show.start_time).filter(
-        Show.artist_id == artist_id, Show.start_time > datetime.today()).all()
-    past_shows = Show.query.join(Show.venue).with_entities(Venue.id.label("venue_id"), Venue.name.label("venue_name"), Venue.image_link.label("venue_image_link"), Show.start_time).filter(
-        Show.artist_id == artist_id, Show.start_time <= datetime.today()).all()
+    upcoming_shows = []
+    past_shows = []
+    
+    for show in artist.shows:
+        result = {"venue_id":show.venue_id,"venue_name":show.venue.name,"venue_image_link":show.venue.image_link,"start_time":show.start_time}
+        if show.start_time > datetime.today() :
+            upcoming_shows.append(result)
+        else:
+            past_shows.append(result)
 
     data = {
         "id": artist.id,

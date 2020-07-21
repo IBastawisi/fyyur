@@ -2,36 +2,46 @@
 {% block title %}{{ venue.name }} | Venue{% endblock %}
 {% block content %}
 <div class="row">
-	<div class="col-sm-6">
-		<h1 class="monospace">
-			{{ venue.name }}
-		</h1>
-		<p class="subtitle">
-			ID: {{ venue.id }}
-		</p>
-		<div class="genres">
-			{% for genre in venue.genres %}
-			<span class="genre">{{ genre }}</span>
-			{% endfor %}
+	<div class="col-sm-6 mb-3">
+	<div class="mdc-card">
+		<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
+		  <div class="mdc-card__media mdc-card__media--16-9" style="background-image: url({{ venue.image_link }});"></div>
+		  <div style="padding: 0 1rem;">
+			<h2 class="mdc-typography mdc-typography--headline6">{{ venue.name }}</h2>
+			<h3 class="mdc-typography mdc-typography--subtitle2" style="margin: 0;">
+				<div class="genres">
+					{% for genre in venue.genres %}
+					<span class="genre">{{ genre }}</span>
+					{% endfor %}
+				</div>
+			</h3>
+		  </div>
+		<div style="padding: 0 0.5rem;">
+			<p><i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}</p>
+			<p><i class="fas fa-map-marker"></i> {% if venue.address %}{{ venue.address }}{% else %}No Address{% endif %}</p>
+			<p><i class="fas fa-phone-alt"></i> {% if venue.phone %}{{ venue.phone }}{% else %}No Phone{% endif %}</p>
+			<p class="text-truncate"><i class="fas fa-link"></i> {% if venue.website %}<a href="{{ venue.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}</p>
+			<p class="text-truncate"><i class="fab fa-facebook-f"></i> {% if venue.facebook_link %}<a href="{{ venue.facebook_link }}"target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}</p>
+		
 		</div>
-		<p>
-			<i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}
-		</p>
-		<p>
-			<i class="fas fa-map-marker"></i> {% if venue.address %}{{ venue.address }}{% else %}No Address{% endif %}
-		</p>
-		<p>
-			<i class="fas fa-phone-alt"></i> {% if venue.phone %}{{ venue.phone }}{% else %}No Phone{% endif %}
-		</p>
-		<p>
-			<i class="fas fa-link"></i> {% if venue.website %}<a href="{{ venue.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}
-		</p>
-		<p>
-			<i class="fab fa-facebook-f"></i> {% if venue.facebook_link %}<a href="{{ venue.facebook_link }}" target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}
-		</p>
+		</div>
+		<div class="mdc-card__actions">
+		  <div class="mdc-card__action-buttons">
+			<a class="mdc-button mdc-card__action mdc-card__action--button" href="/venues/{{ venue.id }}/edit" data-mdc-auto-init="MDCRipple"><span class="mdc-button__ripple"></span> Edit</a>
+			<button class="mdc-button mdc-card__action mdc-card__action--button" onclick="fetch('/venues/{{ venue.id }}', {method: 'delete'}).then(()=>{
+				snackbar.labelText='Venue {{ venue.name }} was successfully deleted!'; snackbar.open();
+				 setTimeout(() => {location.href='/'}, 1500);
+				 })" data-mdc-auto-init="MDCRipple"> <span class="mdc-button__ripple"></span> Delete</button>
+		  </div>
+		</div>
+	  </div>
+
+	</div>
+
+	  <div class="col-sm-6">
 		{% if venue.seeking_talent %}
 		<div class="seeking">
-			<p class="lead">Currently seeking talent</p>
+			<p class="lead">Currently seeking performance talent</p>
 			<div class="description">
 				<i class="fas fa-quote-left"></i> {{ venue.seeking_description }} <i class="fas fa-quote-right"></i>
 			</div>
@@ -41,25 +51,25 @@
 			<i class="fas fa-moon"></i> Not currently seeking talent
 		</p>
 		{% endif %}
+	</div>
 
-		<div style="padding: 1rem; margin-top: 1rem;">
-			<a class="btn btn-primary" href="/venues/{{ venue.id }}/edit">Edit</a>
-			<button class="btn btn-danger" onclick="fetch('/venues/{{ venue.id }}', {method: 'delete'}).then(()=>location.href='/')">Delete</a>
-		</div>
-	</div>
-	<div class="col-sm-6">
-		<img src="{{ venue.image_link }}" alt="Venue Image" />
-	</div>
 </div>
 <section>
 	<h2 class="monospace">{{ venue.upcoming_shows_count }} Upcoming {% if venue.upcoming_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
 		{%for show in venue.upcoming_shows %}
-		<div class="col-sm-4">
-			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+		<div class="col-sm-4 mb-3">
+			<div class="mdc-card">
+				<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
+					<div class="mdc-card__media mdc-card__media--16-9"
+						style="background-image: url({{ show.artist_image_link }});"></div>
+					<div class="px-3 pb-3">
+						<h2 class="mdc-typography mdc-typography--headline6"><a
+								href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h2>
+						<h3 class="mdc-typography mdc-typography--subtitle2">
+							{{ show.start_time|datetime('full') }}</h3>
+					</div>
+				</div>
 			</div>
 		</div>
 		{% endfor %}
@@ -69,16 +79,22 @@
 	<h2 class="monospace">{{ venue.past_shows_count }} Past {% if venue.past_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
 		{%for show in venue.past_shows %}
-		<div class="col-sm-4">
-			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+		<div class="col-sm-4 mb-3">
+			<div class="mdc-card">
+				<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
+					<div class="mdc-card__media mdc-card__media--16-9"
+						style="background-image: url({{ show.artist_image_link }});"></div>
+					<div class="px-3 pb-3">
+						<h2 class="mdc-typography mdc-typography--headline6"><a
+								href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h2>
+						<h3 class="mdc-typography mdc-typography--subtitle2">
+							{{ show.start_time|datetime('full') }}</h3>
+					</div>
+				</div>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 </section>
-
 {% endblock %}
 

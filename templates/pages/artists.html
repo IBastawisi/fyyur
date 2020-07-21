@@ -1,16 +1,18 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Fyyur | Artists{% endblock %}
 {% block content %}
-<ul class="items">
+<ul class="mdc-list" data-mdc-auto-init="MDCList">
 	{% for artist in artists %}
-	<li>
-		<a href="/artists/{{ artist.id }}">
-			<i class="fas fa-users"></i>
-			<div class="item">
-				<h5>{{ artist.name }}</h5>
-			</div>
-		</a>
+	<li class=" mdc-list-item" tabindex="0" data-mdc-auto-init="MDCRipple" onclick="location.href='/artists/{{ artist.id }}'">
+		<span class="mdc-list-item__ripple"></span>
+		<span class="material-icons" aria-hidden="true">group</span>
+		<span class="mdc-list-item__text px-2">{{ artist.name }}</span>
 	</li>
 	{% endfor %}
 </ul>
+<button class="mdc-fab" aria-label="Create" data-mdc-auto-init="MDCRipple" onclick="location.href='/artists/create'"
+	style="position: fixed;bottom: 5rem;right: 2rem;">
+	<div class="mdc-fab__ripple"></div>
+	<span class="mdc-fab__icon material-icons">add</span>
+</button>
 {% endblock %}

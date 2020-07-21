@@ -3,15 +3,30 @@
 {% block content %}
 <div class="row shows">
     {%for show in shows %}
-    <div class="col-sm-4">
-        <div class="tile tile-show">
-            <img src="{{ show.artist_image_link }}" alt="Artist Image" />
-            <h4>{{ show.start_time|datetime('full') }}</h4>
-            <h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-            <p>playing at</p>
-            <h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
+    <div class="col-sm-6 col-md-4" style="margin-bottom: 1rem;">
+        <div class="mdc-card">
+            <div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
+                <div class="mdc-card__media mdc-card__media--16-9"
+                    style="background-image: url({{ show.artist_image_link }});"></div>
+                <div style="padding: 0 1rem;">
+                    <h2 class="mdc-typography mdc-typography--headline6"><a
+                            href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h2>
+                    <h3 class="mdc-typography mdc-typography--subtitle2" style="margin: 0;">
+                        {{ show.start_time|datetime('full') }}</h3>
+                </div>
+                <div style="padding: 0 1rem 1rem;">
+                    <p class="mdc-typography mdc-typography--subtitle2">playing at</p>
+                    <h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
+<button class="mdc-fab" aria-label="Create" data-mdc-auto-init="MDCRipple" onclick="location.href='/shows/create'"
+	style="position: fixed;bottom: 5rem;right: 2rem;">
+	<div class="mdc-fab__ripple"></div>
+	<span class="mdc-fab__icon material-icons">add</span>
+</button>
+
 {% endblock %}
