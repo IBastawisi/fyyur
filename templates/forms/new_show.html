@@ -1,38 +1,42 @@
 {% extends 'layouts/main.html' %}
 {% block title %}New Show Listing{% endblock %}
 {% block content %}
-  <div class="form-wrapper mx-auto">
-    <form method="post" class="form">
-      <h3 class="form-heading">List a new show</h3>
-     
-      <div class="form-group my-2">
-        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
-          <span class="mdc-text-field__ripple"></span>
-          {{ form.artist_id(class_ = 'mdc-text-field__input', placeholder="ID can be found on the Artist's Page", autofocus = true, **{"aria-labelledby":"artist_id"}) }}
-          <span class="mdc-floating-label" id="artist_id">Artist ID</span>
-          <span class="mdc-line-ripple"></span>
-        </label>
-      </div>
+<div class="form-wrapper mx-auto">
+  <form method="post" class="form">
+    <h3 class="form-heading  row mx-0 align-items-center">
+      <button type="button" class="mdc-icon-button material-icons" style="width: 2rem;height: 2rem;padding: 0;" onclick="location.href='{{ url_for('index') }}'">arrow_back</button>
+      <span class="mdc-typography--subtitle2">List a show</span>
+    </h3>
 
-      <div class="form-group my-2">
-        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
-          <span class="mdc-text-field__ripple"></span>
-          {{ form.venue_id(class_ = 'mdc-text-field__input', placeholder="ID can be found on the Venue's Page", autofocus = true, **{"aria-labelledby":"venue_id"}) }}
-          <span class="mdc-floating-label" id="venue_id">Venue ID</span>
-          <span class="mdc-line-ripple"></span>
-        </label>
+    <div class="form-group my-2">
+      <div class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+        <span class="mdc-text-field__ripple"></span>
+        {{ form.artist_id(class_ = 'mdc-text-field__input', placeholder="ID can be found on the Artist's Page", autofocus = true, **{"aria-labelledby":"artist_id"}) }}
+        <label class="mdc-floating-label" for="artist_id">Artist ID</label>
+        <span class="mdc-line-ripple"></span>
       </div>
+    </div>
 
-      <div class="form-group my-2">
-        <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
-          <span class="mdc-text-field__ripple"></span>
-          {{ form.start_time(class_ = 'mdc-text-field__input', placeholder="YYYY-MM-DD HH:MM", autofocus = true, **{"aria-labelledby":"start_time"}) }}
-          <span class="mdc-floating-label" id="start_time">Start Time</span>
-          <span class="mdc-line-ripple"></span>
-        </label>
+    <div class="form-group my-2">
+      <div class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+        <span class="mdc-text-field__ripple"></span>
+        {{ form.venue_id(class_ = 'mdc-text-field__input', placeholder="ID can be found on the Venue's Page", autofocus = true, **{"aria-labelledby":"venue_id"}) }}
+        <label class="mdc-floating-label" for="venue_id">Venue ID</label>
+        <span class="mdc-line-ripple"></span>
       </div>
+    </div>
 
-      <button type="submit" class="mdc-button mdc-button--outlined" data-mdc-auto-init="MDCRipple"> <span class="mdc-button__ripple"></span>Create Show</button>
-    </form>
-  </div>
+    <div class="form-group my-2">
+      <div class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
+        <span class="mdc-text-field__ripple"></span>
+        {{ form.start_time(class_ = 'mdc-text-field__input', placeholder="YYYY-MM-DD HH:MM", autofocus = true, **{"aria-labelledby":"start_time"}) }}
+        <label class="mdc-floating-label" for="start_time">Start Time</label>
+        <span class="mdc-line-ripple"></span>
+      </div>
+    </div>
+
+    <button type="submit" class="mdc-button mdc-button--outlined" data-mdc-auto-init="MDCRipple"> <span
+        class="mdc-button__ripple"></span>Create Show</button>
+  </form>
+</div>
 {% endblock %}

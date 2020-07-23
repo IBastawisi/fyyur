@@ -5,25 +5,29 @@
 	<div class="col-sm-6 mb-3">
 	<div class="mdc-card">
 		<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
-		  <div class="mdc-card__media mdc-card__media--16-9" style="background-image: url({{ venue.image_link }});"></div>
-		  <div style="padding: 0 1rem;">
-			<h2 class="mdc-typography mdc-typography--headline6">{{ venue.name }}</h2>
-			<h3 class="mdc-typography mdc-typography--subtitle2" style="margin: 0;">
-				<div class="genres">
+			<div class="mdc-card__media mdc-card__media--16-9" style="background-image: url({{ venue.image_link }});"></div>
+			<h2 class="mdc-typography mdc-typography--headline6 px-3 mb-0">{{ venue.name }}</h2>
+			<h3 class="mdc-typography mdc-typography--subtitle2 m-0">
+				<div class="mdc-chip-set" role="grid">
 					{% for genre in venue.genres %}
-					<span class="genre">{{ genre }}</span>
+					<div class="mdc-chip" role="row">
+						<div class="mdc-chip__ripple"></div>
+						<span role="gridcell">
+							<span role="button" class="mdc-chip__primary-action">
+								<span class="mdc-chip__text">{{ genre }}</span>
+							</span>
+						</span>
+					</div>
 					{% endfor %}
 				</div>
 			</h3>
-		  </div>
-		<div style="padding: 0 0.5rem;">
-			<p><i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}</p>
-			<p><i class="fas fa-map-marker"></i> {% if venue.address %}{{ venue.address }}{% else %}No Address{% endif %}</p>
-			<p><i class="fas fa-phone-alt"></i> {% if venue.phone %}{{ venue.phone }}{% else %}No Phone{% endif %}</p>
-			<p class="text-truncate"><i class="fas fa-link"></i> {% if venue.website %}<a href="{{ venue.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}</p>
-			<p class="text-truncate"><i class="fab fa-facebook-f"></i> {% if venue.facebook_link %}<a href="{{ venue.facebook_link }}"target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}</p>
-		
-		</div>
+			<div class="px-2 pb-2">
+				<p><i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}</p>
+				<p><i class="fas fa-map-marker"></i> {% if venue.address %}{{ venue.address }}{% else %}No Address{% endif %}</p>
+				<p><i class="fas fa-phone-alt"></i> {% if venue.phone %}{{ venue.phone }}{% else %}No Phone{% endif %}</p>
+				<p class="text-truncate"><i class="fas fa-link"></i> {% if venue.website %}<a href="{{ venue.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}</p>
+				<p class="text-truncate"><i class="fab fa-facebook-f"></i> {% if venue.facebook_link %}<a href="{{ venue.facebook_link }}"target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}</p>
+			</div>
 		</div>
 		<div class="mdc-card__actions">
 		  <div class="mdc-card__action-buttons">
