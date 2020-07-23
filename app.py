@@ -6,7 +6,8 @@ import json
 import dateutil.parser
 from datetime import datetime
 import babel
-import collections
+from operator import itemgetter
+from itertools import groupby
 from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort, jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -56,8 +57,6 @@ def index():
 
 @app.route('/venues')
 def venues():
-    areas = Venue.query.with_entities(
-        Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
 
     upcoming_shows = Show.query.with_entities(Show.venue_id, db.func.count("*").label("num_upcoming_shows"))\
         .filter(Show.start_time > datetime.today()).group_by(Show.venue_id).subquery()
@@ -65,13 +64,23 @@ def venues():
     venues = Venue.query.with_entities(Venue.id, Venue.name, Venue.city, Venue.state, upcoming_shows.c.num_upcoming_shows)\
         .outerjoin(upcoming_shows, upcoming_shows.c.venue_id == Venue.id).all()
 
-    data = []
-    for area in areas:
-        data.append({
-            "city": area.city,
-            "state": area.state,
-            "venues": list(filter(lambda x: x.city == area.city, venues))
-        })
+    venues = [t._asdict() for t in venues]
+
+    venues.sort(key=itemgetter('city'))
+
+    data=[]
+
+    for area, items in groupby(venues, key=itemgetter('city','state')):
+        result = {
+            "city": area[0],
+            "state": area[1],
+            "venues": []
+        }
+        for i in items:
+            result["venues"].append(i)
+        
+        data.append(result)
+
 
     return render_template('pages/venues.html', areas=data)
 
