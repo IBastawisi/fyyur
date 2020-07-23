@@ -33,7 +33,7 @@
 			<a class="mdc-button mdc-card__action mdc-card__action--button" href="/artists/{{ artist.id }}/edit" data-mdc-auto-init="MDCRipple"><span class="mdc-button__ripple"></span> Edit</a>
 			<button class="mdc-button mdc-card__action mdc-card__action--button" onclick="fetch('/artists/{{ artist.id }}', {method: 'delete'}).then(()=>{
 				snackbar.labelText='Artist {{ artist.name }} was successfully deleted!'; snackbar.open();
-				 setTimeout(() => {location.href='/'}, 1500);
+				 setTimeout(() => {location.href='/'}, 1000);
 				 })" data-mdc-auto-init="MDCRipple"> <span class="mdc-button__ripple"></span> Delete</button>
 		  </div>
 		</div>
