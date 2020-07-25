@@ -3,8 +3,9 @@
 {% block content %}
 <div class="form-wrapper mx-auto">
   <form method="post" class="form">
+    {{ form.csrf_token }}
     <h3 class="form-heading  row mx-0 align-items-center">
-      <button type="button" class="mdc-icon-button material-icons" style="width: 2rem;height: 2rem;padding: 0;" onclick="location.href='{{ url_for('index') }}'">arrow_back</button>
+      <button type="button" class="mdc-icon-button material-icons" style="width: 2rem;height: 2rem;padding: 0;" onclick="location.href=`{{ url_for('index') }}`">arrow_back</button>
       <span class="mdc-typography--subtitle2">List a show</span>
     </h3>
 

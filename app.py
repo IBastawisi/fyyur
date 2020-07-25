@@ -1,25 +1,24 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-
-import json
 import dateutil.parser
 from datetime import datetime
 import babel
 from operator import itemgetter
 from itertools import groupby
-from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort, jsonify
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging
-import sys
 from logging import Formatter, FileHandler
-from flask_wtf import Form
-from forms import *
+from forms import ArtistForm, VenueForm, ShowForm
 from models import *
 from config import db, app
-from init import *
+from init import insert_initial_data
+
+#Insert some data
+insert_initial_data()
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -68,9 +67,9 @@ def venues():
 
     venues.sort(key=itemgetter('city'))
 
-    data=[]
+    data = []
 
-    for area, items in groupby(venues, key=itemgetter('city','state')):
+    for area, items in groupby(venues, key=itemgetter('city', 'state')):
         result = {
             "city": area[0],
             "state": area[1],
@@ -78,9 +77,8 @@ def venues():
         }
         for i in items:
             result["venues"].append(i)
-        
-        data.append(result)
 
+        data.append(result)
 
     return render_template('pages/venues.html', areas=data)
 
@@ -137,9 +135,17 @@ def create_venue_form():
 def create_venue_submission():
 
     try:
-        form = {**request.form}
-        form['genres'] = ','.join(request.form.getlist("genres"))
-        venue = Venue(**form)
+        form = VenueForm(request.form)
+
+        if not form.validate_on_submit():
+            flash('An error occurred. ' + str(form.errors))
+            return redirect(url_for('create_venue_form'))
+
+        data = form.data
+        data['genres'] = ','.join(data["genres"])
+        data.pop('csrf_token')
+
+        venue = Venue(**data)
         db.session.add(venue)
         db.session.commit()
         flash('Venue ' + request.form['name'] + ' was successfully listed!')
@@ -263,10 +269,18 @@ def edit_artist(artist_id):
 def edit_artist_submission(artist_id):
 
     try:
-        form = {**request.form}
-        form['genres'] = ','.join(request.form.getlist("genres"))
+        form = ArtistForm(request.form)
+
+        if not form.validate_on_submit():
+            flash('An error occurred. ' + str(form.errors))
+            return redirect(url_for('edit_artist', artist_id=artist_id))
+
+        data = form.data
+        data['genres'] = ','.join(data["genres"])
+        data.pop('csrf_token')
+
         artist = Artist.query.get(artist_id)
-        for key, value in form.items():
+        for key, value in data.items():
             setattr(artist, key, value)
 
         db.session.commit()
@@ -297,10 +311,18 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
 
     try:
-        form = {**request.form}
-        form['genres'] = ','.join(request.form.getlist("genres"))
+        form = VenueForm(request.form)
+
+        if not form.validate_on_submit():
+            flash('An error occurred. ' + str(form.errors))
+            return redirect(url_for('edit_venue', venue_id=venue_id))
+
+        data = form.data
+        data['genres'] = ','.join(data["genres"])
+        data.pop('csrf_token')
+
         venue = Venue.query.get(venue_id)
-        for key, value in form.items():
+        for key, value in data.items():
             setattr(venue, key, value)
 
         db.session.commit()
@@ -330,9 +352,17 @@ def create_artist_form():
 @ app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
     try:
-        form = {**request.form}
-        form['genres'] = ','.join(request.form.getlist("genres"))
-        artist = Artist(**form)
+        form = ArtistForm(request.form)
+
+        if not form.validate_on_submit():
+            flash('An error occurred. ' + str(form.errors))
+            return redirect(url_for('create_artist_form'))
+
+        data = form.data
+        data['genres'] = ','.join(data["genres"])
+        data.pop('csrf_token')
+
+        artist = Artist(**data)
         db.session.add(artist)
         db.session.commit()
         flash('Artist ' + request.form['name'] + ' was successfully listed!')
@@ -369,9 +399,14 @@ def create_shows():
 @ app.route('/shows/create', methods=['POST'])
 def create_show_submission():
     try:
-        show = Show(**request.form)
+        form = ShowForm(request.form)
+        data = form.data
+        data.pop('csrf_token')
+
+        show = Show(**data)
         db.session.add(show)
         db.session.commit()
+
         flash('Show was successfully listed!')
     except:
         db.session.rollback()

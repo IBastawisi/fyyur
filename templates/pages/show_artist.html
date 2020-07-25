@@ -5,7 +5,7 @@
 	<div class="col-sm-6">
 	<div class="mdc-card">
 		<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
-			<div class="mdc-card__media mdc-card__media--16-9" style="background-image: url({{ artist.image_link }});"></div>
+			<div class="mdc-card__media mdc-card__media--16-9" style="background-image: url('{{ artist.image_link }}');"></div>
 			<h2 class="mdc-typography mdc-typography--headline6 px-3 mb-0">{{ artist.name }}</h2>
 			<h3 class="mdc-typography mdc-typography--subtitle2 m-0">
 				<div class="mdc-chip-set" role="grid">
@@ -65,7 +65,7 @@
 			<div class="mdc-card">
 				<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
 					<div class="mdc-card__media mdc-card__media--16-9"
-						style="background-image: url({{ show.venue_image_link }});"></div>
+						style="background-image: url('{{ show.venue_image_link }}');"></div>
 					<div class="px-3 pb-3">
 						<h2 class="mdc-typography mdc-typography--headline6"><a
 								href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h2>
@@ -86,7 +86,7 @@
 			<div class="mdc-card">
 				<div class="mdc-card__primary-action" tabindex="0" data-mdc-auto-init="MDCRipple">
 					<div class="mdc-card__media mdc-card__media--16-9"
-						style="background-image: url({{ show.venue_image_link }});"></div>
+						style="background-image: url('{{ show.venue_image_link }}');"></div>
 					<div class="px-3 pb-3">
 						<h2 class="mdc-typography mdc-typography--headline6"><a
 								href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h2>

@@ -3,8 +3,9 @@
 {% block content %}
 <div class="form-wrapper mx-auto">
   <form class="form" method="post" action="/artists/{{artist.id}}/edit">
+    {{ form.csrf_token }}
     <h3 class="form-heading  row mx-0 align-items-center">
-      <button type="button" class="mdc-icon-button material-icons" style="width: 2rem;height: 2rem;padding: 0;" onclick="location.href='{{ url_for('index') }}'">arrow_back</button>
+      <button type="button" class="mdc-icon-button material-icons" style="width: 2rem;height: 2rem;padding: 0;" onclick="location.href=`{{ url_for('index') }}`">arrow_back</button>
       <span class="mdc-typography--subtitle2">Edit artist <em>{{ artist.name }}</em></span>
     </h3>
 
@@ -35,7 +36,7 @@
     <div class="form-group my-2">
       <div class="mdc-text-field mdc-text-field--filled" style="width: 100%;" data-mdc-auto-init="MDCTextField">
         <span class="mdc-text-field__ripple"></span>
-        {{ form.phone(class_ = 'mdc-text-field__input', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+        {{ form.phone(class_ = 'mdc-text-field__input', placeholder='xxx-xxx-xxxx', pattern = '^([0-9]{3})[-][0-9]{3}[-][0-9]{4}$', autofocus = true) }}
         <label class="mdc-floating-label" for="phone">Phone</label>
         <span class="mdc-line-ripple"></span>
       </div>
