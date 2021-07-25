@@ -5,3 +5,4 @@ flask_sqlalchemy
 flask_migrate
 flask-moment
 flask-wtf
+gunicorn
