@@ -1,5 +1,6 @@
 from models import *
 from config import db
+import dateutil.parser
 
 def insert_initial_data():
 
@@ -83,31 +84,31 @@ def insert_initial_data():
     show1 = Show(
         venue_id=1,
         artist_id=1,
-        start_time="2019-05-21T21:30:00.000Z"
+        start_time=dateutil.parser.parse("2019-05-21T21:30:00.000Z")
     )
 
     show2 = Show(
         venue_id=3,
         artist_id=2,
-        start_time="2019-06-15T23:00:00.000Z"
+        start_time=dateutil.parser.parse("2019-06-15T23:00:00.000Z")
     )
 
     show3 = Show(
         venue_id=3,
         artist_id=3,
-        start_time="2035-04-01T20:00:00.000Z"
+        start_time=dateutil.parser.parse("2035-04-01T20:00:00.000Z")
     )
 
     show4 = Show(
         venue_id=3,
         artist_id=3,
-        start_time="2035-05-01T20:00:00.000Z"
+        start_time=dateutil.parser.parse("2035-05-01T20:00:00.000Z")
     )
 
     show5 = Show(
         venue_id=3,
         artist_id=3,
-        start_time="2035-06-01T20:00:00.000Z"
+        start_time=dateutil.parser.parse("2035-06-01T20:00:00.000Z")
     )
 
     db.session.add_all([artist1, artist2, artist3, venue1, venue2,

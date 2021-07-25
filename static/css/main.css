@@ -361,3 +361,28 @@ h1.monospace {
 .mdc-select:not(.mdc-select--disabled).mdc-select--focused .mdc-floating-label {
   color: var(--mdc-theme-primary,#ff8c3a);
 }
+
+.mdc-list-item {
+  height: 48px;
+  align-items: center;
+}
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: var(--mdc-theme-text-primary-on-background);
+}
+
+@keyframes onAutoFillStart { from {} }
+
+input:-webkit-autofill {
+    animation-name: onAutoFillStart;
+    animation-delay: 1ms;
+    transition: background-color 50000s ease-in-out 0s;
+}
+
+@keyframes onAutoFillCancel { from {} }
+
+input:not(:-webkit-autofill) {
+    animation-name: onAutoFillCancel;
+    animation-delay: 1ms;
+}
+

@@ -1,6 +1,5 @@
 import os
 from flask import Flask
-from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -14,7 +13,8 @@ DEBUG = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Connect to the database
-SQLALCHEMY_DATABASE_URI = 'postgres:///fyyur'
+database_filename = "database.db"
+SQLALCHEMY_DATABASE_URI = "sqlite:///{}".format(os.path.join(basedir, database_filename))
 
 app = Flask(__name__)
 
